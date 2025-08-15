@@ -1,6 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import { connectDB } from './db/config.ts';
+import authRoutes from './routes/authRoutes.ts';
+import userRoutes from './routes/userRoutes.ts';
 
 
 
@@ -19,15 +21,15 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 
-// app.use("/api/auth", authRoutes);
-// app.use("/api/users", userRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/users", userRoutes);
 // app.use("/api/tasks", taskRoutes);
 // app.use("/api/reports", reportRoutes);
 
 
 
 app.listen( PORT, () => {
-    console.log("Listening on port");
+    console.log(`Listening on port ${PORT}`);
 })
 
 

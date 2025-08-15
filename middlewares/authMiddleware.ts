@@ -1,8 +1,10 @@
-import { NextFunction, Request, Response } from 'express';
+import type { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
-import { userModel } from '../models/User';
+import { userModel } from '../models/User.ts';
 
-
+type Decode = {
+    id: string
+}
 
 export const protect = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -10,8 +12,8 @@ export const protect = async (req: Request, res: Response, next: NextFunction) =
 
         if(token && token.startsWith("Bearer")){
             token = token.split(" ")[1];
-            const decoded = jwt.verify(token, process.env.JWT_SECRET as string);
-            // req.user = await userModel.findById(decoded.id).select("-password");
+            const decoded = (jwt.verify(token, process.env.JWT_SECRET as string)) as Decode;
+            req.body.user = await userModel.findById(decoded.id).select("-password");
             next();
         } else {
             res.status(401).json({
@@ -29,12 +31,14 @@ export const protect = async (req: Request, res: Response, next: NextFunction) =
 
 
 export const adminOnly = (req: Request, res: Response, next: NextFunction) => {
-    // if(req.user && req.user.role === "admin") {
-    //     next();
-    // } else {
-    //     res.status(403).json( { 
-    //         ok: false,
-    //         message: "Access denied, admin only"
-    //     });
-    // }
+
+    const { user } = req.body;
+    if(user && user.role === "admin") {
+        next();
+    } else {
+        res.status(403).json( { 
+            ok: false,
+            message: "Access denied, admin only"
+        });
+    }
 }

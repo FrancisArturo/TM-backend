@@ -1,0 +1,57 @@
+import type { Request, Response } from 'express';
+import { userModel } from '../models/User.ts';
+import { taskModel } from '../models/Task.ts';
+
+
+export const getUsers = async (req: Request, res:Response) => {
+    try {
+        const users = await userModel.find({ role: 'member' }).select("-password");
+
+        //task counts for users
+        const usersWithTaskCounts = await Promise.all( users.map( async user => {
+            const pendingTasks = await taskModel.countDocuments({ assignedto: user._id, status: "Pending" });
+            const inProgressTasks = await taskModel.countDocuments({ assignedto: user._id, status: "In Progress" });
+            const completedTasks = await taskModel.countDocuments({ assignedto: user._id, status: "Completed" });
+
+            return {
+                ...user._doc, //all user data
+                pendingTasks,
+                inProgressTasks,
+                completedTasks
+            }
+        }));
+
+        res.status(200).json({
+            ok: true,
+            usersWithTaskCounts
+        })
+    } catch (error) {
+        res.status(500).json({
+            ok: false, 
+            message: "Server error" 
+        });
+    }
+};
+
+export const getUserById = async (req: Request, res:Response) => {
+    try {
+        
+    } catch (error) {
+        res.status(500).json({
+            ok: false, 
+            message: "Server error" 
+        });
+    }
+};
+
+export const deleteUser = async (req: Request, res:Response) => {
+    try {
+        
+    } catch (error) {
+        res.status(500).json({
+            ok: false, 
+            message: "Server error" 
+        });
+    }
+};
+
