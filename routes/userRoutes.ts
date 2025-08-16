@@ -5,8 +5,12 @@ import { deleteUser, getUserById, getUsers } from "../controllers/userController
 
 const router = Router();
 
+//admin only
 router.get("/", protect, adminOnly, getUsers);
-router.get("/:id", protect, getUserById);
-router.delete("/:id", protect, adminOnly, deleteUser);
+router.delete("/:uid", protect, adminOnly, deleteUser);
+
+//get a user by id
+router.get("/:uid", protect, getUserById);
+
 
 export default router

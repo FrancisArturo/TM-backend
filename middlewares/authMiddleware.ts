@@ -11,9 +11,11 @@ export const protect = async (req: Request, res: Response, next: NextFunction) =
         let token = req.headers.authorization;
 
         if(token && token.startsWith("Bearer")){
-            token = token.split(" ")[1];
+            token = token.split(" ")[1];         
             const decoded = (jwt.verify(token, process.env.JWT_SECRET as string)) as Decode;
-            req.body.user = await userModel.findById(decoded.id).select("-password");
+            req.body = {
+                user: await userModel.findById(decoded.id).select("-password")
+            } 
             next();
         } else {
             res.status(401).json({
@@ -22,6 +24,7 @@ export const protect = async (req: Request, res: Response, next: NextFunction) =
             });
         }
     } catch (error) {
+        console.log(error)
         res.status(401).json({
             ok: false,
             message: "Token failed" 
