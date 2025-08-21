@@ -9,12 +9,12 @@ const router = Router();
 router.get("/dashboard-data", protect, getDashboardData);
 router.get("/user-dashboard-data", protect, getUserDashboardData);
 router.get("/", protect, getTasks);
-router.get("/:uid", protect, getTaskByID);
+router.get("/:tid", protect, getTaskByID);
 router.post("/", protect, adminOnly, createTask);
-router.put("/:uid", protect, updateTask);
-router.delete("/:uid", protect, adminOnly, deleteTask);
-router.put("/:uid/status", protect, updateTaskStatus);
-router.put("/:uid/todo", protect, updateTaskChecklist);
+router.put("/:tid", protect, updateTask);
+router.delete("/:tid", protect, adminOnly, deleteTask);
+router.put("/:tid/status", protect, updateTaskStatus);
+router.put("/:tid/todo", protect, updateTaskChecklist);
 
 
 
