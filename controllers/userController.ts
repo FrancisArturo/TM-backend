@@ -1,6 +1,6 @@
-import type { Request, Response } from 'express';
 import { userModel } from '../models/User.ts';
 import { taskModel } from '../models/Task.ts';
+import type { Request, Response } from 'express';
 
 
 export const getUsers = async (req: Request, res:Response) => {
@@ -12,14 +12,15 @@ export const getUsers = async (req: Request, res:Response) => {
             const pendingTasks = await taskModel.countDocuments({ assignedto: user._id, status: "Pending" });
             const inProgressTasks = await taskModel.countDocuments({ assignedto: user._id, status: "In Progress" });
             const completedTasks = await taskModel.countDocuments({ assignedto: user._id, status: "Completed" });
-
             return {
-                ...user._doc, //all user data
+                ...user, //all user data
                 pendingTasks,
                 inProgressTasks,
                 completedTasks
             }
         }));
+
+        
 
         res.status(200).json({
             ok: true,

@@ -1,5 +1,6 @@
 import type { Request, Response } from "express";
 import { taskModel } from "../models/Task.ts";
+import type { Filter, Status } from "../types.d.ts";
 
 
 
@@ -124,7 +125,7 @@ export const createTask = async ( req: Request, res: Response ) => {
             return res.status(400).json({
                 ok: false,
                 message: "assignedTo must be an array of user IDs"
-            })
+            });
         }
 
         const task = await taskModel.create({
@@ -136,12 +137,12 @@ export const createTask = async ( req: Request, res: Response ) => {
             createdBy: User._id,
             todoChecklist,
             attachments
-        })
+        });
         res.status(200).json({
             ok: true,
             message: "Task created successfully",
             task
-        })
+        });
     } catch (error) {
         res.status(500).json({
             ok: false, 
@@ -315,6 +316,7 @@ export const updateTaskChecklist = async ( req: Request, res: Response ) => {
         }
 
         await task.save();
+
         const updateTask = await taskModel.findById(tid).populate(
             "assignedTo",
             "name email profileImageUrl"
@@ -369,6 +371,7 @@ export const getDashboardData = async ( req: Request, res: Response ) => {
                 },
             },
         ]);
+
         const taskPriorityLevels = taskPriorities.reduce((acc, priority) => {
             acc[priority] = taskPriorityLevelsRaw.find((item) => item._id === priority)?.count || 0;
             return acc;
